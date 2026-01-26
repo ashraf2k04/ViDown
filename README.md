@@ -21,8 +21,7 @@ This repository uses **modular documentation** instead of a single bloated READM
 ## 📚 Documentation Index
 
 ### Build & Tooling
-- [Gradle setup](docs/gradle/README.md)
-- [Version Catalog](docs/gradle/version-catalog.md)
+- [Gradle setup](docs/gradle/Gradle.md)
 - [Hilt + KSP configuration](docs/gradle/ksp-hilt-setup.md)
 
 ### App Configuration
