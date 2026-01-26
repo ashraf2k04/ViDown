@@ -86,7 +86,7 @@ ksp(libs.hilt.compiler)
 
 ## 🚀 Application Class Setup
 
-Hilt requires an```kotlin  Application ``` class annotated with ```kotlin @HiltAndroidAp` ```.
+Hilt requires an `Application` class annotated with `@HiltAndroidAp`.
 
 ```kotlin
 @HiltAndroidApp
