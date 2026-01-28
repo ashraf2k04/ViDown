@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Vidown</string>
+    <string name="service_title">Service Title\n</string>
 </resources>
