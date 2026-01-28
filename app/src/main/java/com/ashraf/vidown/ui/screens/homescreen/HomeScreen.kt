@@ -1,6 +1,5 @@
 package com.ashraf.vidown.ui.screens.homescreen
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,10 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,27 +16,17 @@ import androidx.navigation.NavController
 import com.ashraf.vidown.ui.screens.homescreen.components.DownloadButton
 import com.ashraf.vidown.ui.screens.homescreen.components.SearchBar
 import com.ashraf.vidown.ui.screens.homescreen.components.SelectPropertyBottomSheet
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    var url by remember { mutableStateOf("") }
-    var showSheet by remember { mutableStateOf(false) }
 
-    Box(
-        Modifier
-            .fillMaxSize()
-//            .background(
-//                Brush.verticalGradient(
-//                    listOf(
-//                        Color(0xFFFCE0D0),
-//                        Color(0xFFE6E8FF)
-//                    )
-//                )
-//            )
-    ) {
+    val state by viewModel.uiState.collectAsState()
 
+    Box(Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,21 +34,24 @@ fun HomeScreen(
         ) {
 
             SearchBar(
-                value = url,
-                onValueChange = { url = it },
-                onSearch = { showSheet = true }
+                value = state.url,
+                onValueChange = viewModel::onUrlChange,
+                onSearch = viewModel::onSearchOrDownloadClick
             )
 
             Spacer(Modifier.height(32.dp))
 
-            DownloadButton { showSheet = true }
-        }
-
-        if (showSheet) {
-            SelectPropertyBottomSheet(
-                show = showSheet,
-                onDismiss = { showSheet = false }
+            DownloadButton(
+                onClick = viewModel::onSearchOrDownloadClick
             )
         }
+
+        SelectPropertyBottomSheet(
+            show = state.showQualitySheet,
+            selectedQuality = state.selectedQuality,
+            onQualitySelected = viewModel::onQualitySelected,
+            onDownload = viewModel::onDownloadConfirmed,
+            onDismiss = viewModel::dismissQualitySheet
+        )
     }
 }

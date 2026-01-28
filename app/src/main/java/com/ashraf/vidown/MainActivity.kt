@@ -8,7 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.ashraf.vidown.ui.screens.mainscreen.MainScreen
 import com.ashraf.vidown.ui.theme.VidownTheme
 import com.ashraf.vidown.util.PermissionManager
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var permissionManager: PermissionManager
