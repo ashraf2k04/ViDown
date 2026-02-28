@@ -36,8 +36,12 @@ fun BottomNavBar(
             )
         }
 
+//        val selectedIndex = items.indexOfFirst {
+//            it.route == scaffoldRoute
+//        }.coerceAtLeast(0)
+
         val selectedIndex = items.indexOfFirst {
-            it.route == scaffoldRoute
+            scaffoldRoute?.startsWith(it.route) == true
         }.coerceAtLeast(0)
 
         CurvedBottomNavigation(
@@ -51,7 +55,7 @@ fun BottomNavBar(
                         saveState = true
                     }
                     launchSingleTop = true
-                    restoreState = true
+                    restoreState = false
                 }
             }
         )

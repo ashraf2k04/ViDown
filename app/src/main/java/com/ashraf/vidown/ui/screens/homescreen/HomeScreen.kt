@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -15,8 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ashraf.vidown.ui.screens.homescreen.components.DownloadButton
 import com.ashraf.vidown.ui.screens.homescreen.components.SearchBar
-import com.ashraf.vidown.ui.screens.homescreen.components.SelectPropertyBottomSheet
+import com.ashraf.vidown.ui.screens.homescreen.components.modalsheet.SelectPropertyBottomSheet
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ashraf.vidown.ui.navigation.Routes
 
 @Composable
 fun HomeScreen(
@@ -25,6 +27,20 @@ fun HomeScreen(
 ) {
 
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is HomeEvent.OpenPlaylist -> {
+                    navController.navigate(
+                        Routes.PlaylistScreen.createRoute(event.url)
+                    ){
+                        launchSingleTop = true
+                    }
+                }
+            }
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -48,8 +64,10 @@ fun HomeScreen(
 
         SelectPropertyBottomSheet(
             show = state.showQualitySheet,
-            selectedQuality = state.selectedQuality,
+            state = state, // ✅ PASS THE ACTUAL STATE
             onQualitySelected = viewModel::onQualitySelected,
+            onFormatSelected = viewModel::onFormatSelected,
+            onAudioToggle = viewModel::onAudioToggle,
             onDownload = viewModel::onDownloadConfirmed,
             onDismiss = viewModel::dismissQualitySheet
         )

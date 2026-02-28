@@ -19,7 +19,7 @@ fun CurvedBottomNavigation(
     fabSize: Dp = 45.dp,
     fabIconSize: Dp = 32.dp,
     enableFabIconScale: Boolean = false,
-    navBarHeight: Dp = 56.dp,
+    navBarHeight: Dp = 45.dp,
     unselectedIconSize: Dp = 24.dp,
     unselectedTextSize: TextUnit = 11.sp,
     fabElevation: Dp = 12.dp,

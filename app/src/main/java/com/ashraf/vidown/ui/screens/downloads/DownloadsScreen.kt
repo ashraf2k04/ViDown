@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.ashraf.vidown.ui.screens.downloads.components.DownloadedList
 import com.ashraf.vidown.ui.screens.downloads.components.DownloadingList
 import com.ashraf.vidown.ui.screens.downloads.components.DownloadsTabs
+import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadTab
 
 @Composable
 fun DownloadsScreen() {
@@ -42,7 +43,6 @@ fun DownloadsScreen() {
         AnimatedContent(
             targetState = selectedTab,
             transitionSpec = {
-                // Decide direction based on tab change
                 val direction = when {
                     initialState == DownloadTab.DOWNLOADING &&
                             targetState == DownloadTab.DOWNLOADED -> 1   // → right
@@ -67,3 +67,5 @@ fun DownloadsScreen() {
         }
     }
 }
+
+

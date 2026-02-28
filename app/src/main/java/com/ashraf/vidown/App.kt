@@ -1,13 +1,8 @@
 package com.ashraf.vidown
 
 import android.app.Application
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
-import android.os.IBinder
 import android.util.Log
-import com.ashraf.vidown.domain.DownloadService
 import com.ashraf.vidown.notification.NotificationUtil
 import com.yausername.aria2c.Aria2c
 import com.yausername.ffmpeg.FFmpeg
@@ -56,36 +51,7 @@ class App : Application() {
     }
 
     companion object {
-
-        lateinit var context: Context
         lateinit var applicationScope: CoroutineScope
-
-        private var isServiceRunning = false
-
-        private val connection =
-            object : ServiceConnection {
-                override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                    isServiceRunning = true
-                }
-
-                override fun onServiceDisconnected(name: ComponentName?) {
-                    isServiceRunning = false
-                }
-            }
-
-        fun startService() {
-            if (isServiceRunning) return
-            val intent = Intent(context, DownloadService::class.java)
-            context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-        }
-
-        fun stopService() {
-            if (!isServiceRunning) return
-            try {
-                context.unbindService(connection)
-                isServiceRunning = false
-            } catch (_: Exception) {
-            }
-        }
+        lateinit var context: Context
     }
 }

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.ashraf.vidown.ui.screens.downloads.DownloadTab
+import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadTab
 
 @Composable
 fun DownloadsTabs(
@@ -28,13 +28,13 @@ fun DownloadsTabs(
         indicator = {},
         divider = {},
         modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 2.dp)
             .clip(shape)
             .border(
                 shape = shape,
                 width = 2.dp,
                 color = Color.DarkGray
             )
+            .padding(horizontal = 12.dp, vertical = 2.dp)
     ) {
         tabs.forEach { tab ->
             val selected = tab == selectedTab

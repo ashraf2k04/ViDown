@@ -1,5 +1,6 @@
 package com.ashraf.vidown.ui.screens.downloads.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,9 +29,15 @@ import androidx.compose.ui.unit.dp
 fun DownloadItem(
     title: String,
     progress: Float,            // 0f..1f
-    downloaded: String = "120MB",
-    total: String = "160MB"
+    downloaded: String,
+    total: String,
+    onCancel: () -> Unit
 ) {
+
+    Log.d(
+        "DOWNLOAD_PROGRESS",
+        "DOWNLOAD_ITEM - stateUpdated progress=${progress / 100f}"
+    )
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,11 +67,9 @@ fun DownloadItem(
                 )
 
                 CircularProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.size(56.dp),
-                color = ProgressIndicatorDefaults.circularColor,
-                strokeWidth = 4.dp,
-                strokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap,
+                    progress = { progress },
+                    modifier = Modifier.size(56.dp),
+                    strokeWidth = 4.dp
                 )
 
                 Text(
@@ -77,7 +81,7 @@ fun DownloadItem(
 
             Spacer(Modifier.width(12.dp))
 
-            // Title + Progress text
+            // Title + Progress
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -94,6 +98,22 @@ fun DownloadItem(
                     text = "${(progress * 100).toInt()}% · $downloaded / $total",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
+                )
+            }
+
+            Spacer(Modifier.width(8.dp))
+
+            // 🔴 Cancel Chip
+            Surface(
+                onClick = onCancel,
+                shape = RoundedCornerShape(50),
+                color = MaterialTheme.colorScheme.errorContainer
+            ) {
+                Text(
+                    text = "Cancel",
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }
