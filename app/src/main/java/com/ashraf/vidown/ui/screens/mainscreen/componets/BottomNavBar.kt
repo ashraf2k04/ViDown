@@ -30,7 +30,7 @@ fun BottomNavBar(
                 NavItem(
                     icon = IconSource.Vector(Icons.Outlined.Downloading),
                     selectedIcon = IconSource.Vector(Icons.Filled.DownloadForOffline),
-                    label = "Downloaded",
+                    label = "Downloads",
                     route = Routes.DownloadsScreen.route
                 )
             )

@@ -75,7 +75,7 @@ class HomeViewModel @Inject constructor(
 
     /* ---------------- FETCH ---------------- */
 
-    private fun fetchInfo(url: String) {
+    private fun fetchInfo(url: String){
         viewModelScope.launch(Dispatchers.IO) {
 
             val result = ytldpDriverWrapper.fetchVideoInfoDriver.fetchVideoInfo(

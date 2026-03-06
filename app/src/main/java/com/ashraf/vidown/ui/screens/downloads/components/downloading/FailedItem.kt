@@ -1,6 +1,5 @@
-package com.ashraf.vidown.ui.screens.downloads.components
+package com.ashraf.vidown.ui.screens.downloads.components.downloading
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,12 +25,16 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.AsyncImage
+import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadStatus
 
 @Composable
 fun FailedItem(
+    status: DownloadStatus,
     reason: String,
     title: String = "Download Failed",
-    onRetry: (() -> Unit)? = null
+    onRetry: (() -> Unit)? = null,
+    thumbnail: String
 ) {
     Surface(
         modifier = Modifier
@@ -53,11 +56,12 @@ fun FailedItem(
                 modifier = Modifier.size(64.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Box(
+                AsyncImage(
+                    model = thumbnail,
+                    contentDescription = null,
                     modifier = Modifier
                         .matchParentSize()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFF3F3F3))
                 )
 
                 Icon(

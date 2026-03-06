@@ -22,10 +22,4 @@ class FetchPlaylistInfoDriver @Inject constructor() {
             taskKey = taskKey
         )
     }
-
-    fun cancel() {
-        currentTaskKey?.let {
-            YoutubeDL.getInstance().destroyProcessById(it)
-        }
-    }
 }

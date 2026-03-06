@@ -1,6 +1,5 @@
-package com.ashraf.vidown.ui.screens.downloads.components
+package com.ashraf.vidown.ui.screens.downloads.components.downlaoded
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,25 +20,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
-fun DownloadItem(
+fun DownloadedItem(
+    thumbnail : String,
     title: String,
-    progress: Float,            // 0f..1f
-    downloaded: String,
-    total: String,
-    onCancel: () -> Unit
+    size: String,
+    modifier: Modifier = Modifier
 ) {
-
-    Log.d(
-        "DOWNLOAD_PROGRESS",
-        "DOWNLOAD_ITEM - stateUpdated progress=${progress / 100f}"
-    )
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(20.dp),
@@ -47,41 +44,38 @@ fun DownloadItem(
         shadowElevation = 8.dp
     ) {
         Row(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // Thumbnail + Progress Ring
             Box(
-                modifier = Modifier.size(64.dp),
-                contentAlignment = Alignment.Center
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFFEDEDED))
             ) {
-
-                Box(
+                AsyncImage(
+                    model = thumbnail,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .matchParentSize()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFEDEDED))
                 )
 
-                CircularProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.size(56.dp),
-                    strokeWidth = 4.dp
-                )
-
-                Text(
-                    text = "${(progress * 100).toInt()}%",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
             Spacer(Modifier.width(12.dp))
 
-            // Title + Progress
+            // Title + Status
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -95,27 +89,19 @@ fun DownloadItem(
                 Spacer(Modifier.height(4.dp))
 
                 Text(
-                    text = "${(progress * 100).toInt()}% · $downloaded / $total",
+                    text = "Completed • $size",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
             }
 
-            Spacer(Modifier.width(8.dp))
-
-            // 🔴 Cancel Chip
-            Surface(
-                onClick = onCancel,
-                shape = RoundedCornerShape(50),
-                color = MaterialTheme.colorScheme.errorContainer
-            ) {
-                Text(
-                    text = "Cancel",
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onErrorContainer
-                )
-            }
+            // Success icon
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint = Color(0xFF4CAF50),
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }

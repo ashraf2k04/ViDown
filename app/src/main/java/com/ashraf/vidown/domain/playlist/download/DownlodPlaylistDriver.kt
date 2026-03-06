@@ -1,7 +1,12 @@
 package com.ashraf.vidown.domain.playlist.download
 
 import android.util.Log
+import com.ashraf.vidown.domain.DownloadEngineImplement
+import com.ashraf.vidown.database.DownloadEntity
+import com.ashraf.vidown.database.DownloadRepository
 import com.ashraf.vidown.domain.helpers.PlaylistEntry
+import com.ashraf.vidown.domain.helpers.VideoInfo
+import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,6 +17,8 @@ import javax.inject.Singleton
 class DownloadPlaylistDriver @Inject constructor(
     private val serviceManager: ForegroundServiceManager,
     private val externalScope: CoroutineScope,
+    private val repository: DownloadRepository,
+    private val downloadEngineImplement: DownloadEngineImplement
 ) {
 
     fun downloadPlaylist(
@@ -24,54 +31,55 @@ class DownloadPlaylistDriver @Inject constructor(
 
         serviceManager.start()
 
-        PlaylistStateManager.insertPending(
-            playlist,
-            taskPrefix
-        )
-
         externalScope.launch(Dispatchers.IO) {
 
             val service =
                 serviceManager.awaitService() ?: return@launch
 
-            val result =
-                DownloadPlaylistEngine.downloadPlaylist(
-                    title = title,
-                    playlist = playlist,
-                    outputDir = outputDir,
-                    formatSelector = formatSelector,
-                    taskPrefix = taskPrefix,
-                    progressCallback = { videoName, progress ->
+            playlist.forEachIndexed { index, entry ->
 
-                        val index =
-                            playlist.indexOfFirst {
-                                (it.title ?: it.id) == videoName
-                            }
+                val taskId = "${taskPrefix}_$index"
 
-                        if (index >= 0) {
-                            val taskId = "${taskPrefix}_$index"
+                Log.d("URL", "${entry.thumbnails}")
+                Log.d("URL", "${entry.thumbnails?.firstOrNull()?.url}")
 
-                            PlaylistStateManager.updateProgress(
-                                taskId,
-                                progress
-                            )
-
-                            service.updateProgress(
-                                progress.toInt(),
-                                videoName
-                            )
-                        }
-                    }
+                repository.insert(
+                    DownloadEntity(
+                        taskId = taskId,
+                        title = entry.title!!,
+                        filePath = outputDir,
+                        imageUrl = entry.thumbnails?.firstOrNull()?.url,
+                        playlistId = taskPrefix,
+                        playlistTitle = title,
+                        downloadedBytes = 0L,
+                        totalBytes = null,
+                        status = DownloadStatus.PENDING,
+                        error = null,
+                        createdAt = System.currentTimeMillis()
+                    )
                 )
 
-            result
-                .onFailure {
-                    Log.e("DL_FLOW", "Playlist failed: ${it.message}")
-                }
-        }
-    }
+            }
 
-    fun cancel(task: String) {
-        PlaylistStateManager.cancelTask(taskId = task)
+            playlist.forEachIndexed { index, entry ->
+
+                val taskId = "${taskPrefix}_$index"
+
+                val videoInfo = VideoInfo(
+                    id = entry.id!!,
+                    title = entry.title!!,
+                    originalUrl = entry.url
+                        ?: "https://www.youtube.com/watch?v=${entry.id}",
+                    thumbnail = entry.thumbnails?.firstOrNull()?.url
+                )
+
+                downloadEngineImplement.downloadSuspend(
+                    info = videoInfo,
+                    formatSelector = formatSelector,
+                    outputDir = "$outputDir/${title ?: "Playlist"}",
+                    taskId = taskId,
+                )
+            }
+        }
     }
 }

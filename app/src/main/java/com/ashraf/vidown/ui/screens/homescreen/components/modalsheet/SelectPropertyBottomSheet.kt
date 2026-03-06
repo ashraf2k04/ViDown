@@ -16,10 +16,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ashraf.vidown.ui.screens.homescreen.helpers.HomeUiState
@@ -29,6 +35,7 @@ import com.ashraf.vidown.ui.screens.homescreen.components.modalsheet.skeleton.Sk
 import com.ashraf.vidown.ui.screens.homescreen.components.modalsheet.skeleton.SkeletonChipRow
 import com.ashraf.vidown.ui.screens.homescreen.components.modalsheet.skeleton.SkeletonLine
 import com.ashraf.vidown.ui.screens.homescreen.helpers.formatBytes
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,8 +51,14 @@ fun SelectPropertyBottomSheet(
 
     if (!show) return
 
+    val scope = rememberCoroutineScope()
+    var allowHide by remember { mutableStateOf(false) }
+
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
+        skipPartiallyExpanded = true,
+        confirmValueChange = { newValue ->
+            !(newValue == SheetValue.Hidden && !allowHide)
+        }
     )
 
     ModalBottomSheet(
@@ -168,7 +181,13 @@ fun SelectPropertyBottomSheet(
                         // Cancel button (LEFT)
                         Button(
                             modifier = Modifier.weight(1f),
-                            onClick = onDismiss
+                            onClick = {
+                                scope.launch {
+                                    allowHide = true
+                                    sheetState.hide()
+                                    onDismiss()
+                                }
+                            }
                         ) {
                             Text("Cancel")
                         }

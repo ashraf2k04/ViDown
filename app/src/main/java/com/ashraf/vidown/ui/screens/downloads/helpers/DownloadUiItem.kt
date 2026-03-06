@@ -1,6 +1,5 @@
 package com.ashraf.vidown.ui.screens.downloads.helpers
 
-import com.ashraf.vidown.ui.screens.homescreen.helpers.formatBytes
 
 data class DownloadUiItem(
     val taskId: String,
@@ -9,19 +8,12 @@ data class DownloadUiItem(
     val downloadedBytes: Long,
     val totalBytes: Long?,         // nullable (estimate)
     val status: DownloadStatus,
-    val error: String? = null
+    val error: String? = null,
+    val playlistId: String? = null,
+    val playlistTitle: String? = null,
+    val imageUrl : String? = null,
+    val filepath : String,
+    val createdAt : Long
 )
 
-
-fun DownloadUiItem.progressText(): String {
-    return if (totalBytes != null)
-        "${formatBytes(downloadedBytes)} / ~${formatBytes(totalBytes)}"
-    else
-        formatBytes(downloadedBytes)
-}
-
-fun formatBytes(bytes: Long): String {
-    val mb = bytes / (1024f * 1024f)
-    return String.format("%.1f MB", mb)
-}
 

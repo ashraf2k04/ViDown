@@ -10,7 +10,10 @@ object PlaylistStateManager {
 
     fun insertPending(
         playlist: List<PlaylistEntry>,
-        taskPrefix: String
+        taskPrefix: String,
+        title : String,
+        filePath : String,
+        error : String? = null,
     ) {
         playlist.forEachIndexed { index, entry ->
             val taskId = "${taskPrefix}_$index"
@@ -24,7 +27,11 @@ object PlaylistStateManager {
                     progress = 0f,
                     downloadedBytes = 0L,
                     totalBytes = null,
-                    status = DownloadStatus.PENDING
+                    status = DownloadStatus.PENDING,
+                    playlistId = taskPrefix,
+                    playlistTitle = title,
+                    filepath = filePath,
+                    createdAt = System.currentTimeMillis()
                 )
             )
         }

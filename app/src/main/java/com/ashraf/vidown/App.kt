@@ -32,7 +32,7 @@ class App : Application() {
         Log.d("FLOW", "Version = ${YoutubeDL.getInstance().version(this)}")
 
 
-// 🔹 Optional: update youtube-dl
+        // 🔹 Optional: update youtube-dl
 
         applicationScope.launch {
             try {

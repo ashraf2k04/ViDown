@@ -1,5 +1,6 @@
 package com.ashraf.vidown.ui.screens.playlist
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.LaunchedEffect
@@ -32,11 +33,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.remember
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
 fun PlaylistScreen(
@@ -195,30 +205,223 @@ fun Modifier.shimmer(): Modifier = composed {
 }
 
 
+//@Composable
+//fun PlaylistContent(
+//    state: PlaylistUiState,
+//    viewModel: PlaylistViewModel
+//) {
+//    Column {
+//
+//        PlaylistHeader(
+//            title = state.title,
+//            totalCount = state.items.size,
+//            selectedCount = state.selectedCount,
+//            enableSelected = state.canDownloadSelected,
+//            onDownloadSelected = viewModel::onDownloadSelected,
+//            onDownloadAll = viewModel::onDownloadAll
+//        )
+//
+//        LazyColumn {
+//            items(state.items, key = {  it.id ?: it.title!! }) { item ->
+//                PlaylistItemRow(
+//                    item = item,
+//                    onCheckedChange = { checked ->
+//                        viewModel.onItemChecked(item.id!!, checked)
+//                    }
+//                )
+//            }
+//        }
+//    }
+//}
+
 @Composable
 fun PlaylistContent(
     state: PlaylistUiState,
     viewModel: PlaylistViewModel
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
 
-        PlaylistHeader(
+        PlaylistHeaderModern(
             title = state.title,
             totalCount = state.items.size,
+            selectedCount = state.selectedCount
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(
+                items = state.items,
+                key = { it.id ?: it.title!! }
+            ) { item ->
+
+                PlaylistItemCard(
+                    item = item,
+                    onClick = {
+                        viewModel.onItemChecked(
+                            item.id!!,
+                            !item.isSelected
+                        )
+                    }
+                )
+            }
+        }
+
+        // Bottom Buttons
+        PlaylistBottomBar(
             selectedCount = state.selectedCount,
             enableSelected = state.canDownloadSelected,
             onDownloadSelected = viewModel::onDownloadSelected,
             onDownloadAll = viewModel::onDownloadAll
         )
+    }
+}
+@Composable
+fun PlaylistHeaderModern(
+    title: String,
+    totalCount: Int,
+    selectedCount: Int
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
 
-        LazyColumn {
-            items(state.items, key = {  it.id ?: it.title!! }) { item ->
-                PlaylistItemRow(
-                    item = item,
-                    onCheckedChange = { checked ->
-                        viewModel.onItemChecked(item.id!!, checked)
-                    }
+        Text(
+            text = title.ifBlank { "Playlist" },
+            style = MaterialTheme.typography.headlineSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(Modifier.height(6.dp))
+
+        Text(
+            text = "$totalCount videos" +
+                    if (selectedCount > 0) " • $selectedCount selected" else "",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
+    }
+}
+
+@Composable
+fun PlaylistItemCard(
+    item: PlaylistItemUi,
+    onClick: () -> Unit
+) {
+    val animatedColor by animateColorAsState(
+        targetValue = if (item.isSelected)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+        else
+            MaterialTheme.colorScheme.surface,
+        label = "selectionColor"
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = LocalIndication.current
+            ) {
+                onClick()
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = animatedColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (item.isSelected) 8.dp else 2.dp
+        )
+    ) {
+
+        Row(
+            modifier = Modifier
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            // Thumbnail
+            AsyncImage(
+                model = item.thumbnails?.firstOrNull()?.url,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+
+                Text(
+                    text = item.title ?: "Untitled",
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
+
+                Spacer(Modifier.height(6.dp))
+
+                Text(
+                    text = if (item.isSelected) "Selected" else "Tap to select",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (item.isSelected)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        Color.Gray
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PlaylistBottomBar(
+    selectedCount: Int,
+    enableSelected: Boolean,
+    onDownloadSelected: () -> Unit,
+    onDownloadAll: () -> Unit
+) {
+
+    Surface(
+        tonalElevation = 8.dp,
+        shadowElevation = 12.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+
+            Button(
+                onClick = onDownloadSelected,
+                enabled = enableSelected,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(50)
+            ) {
+                Text("Download Selected")
+            }
+
+            OutlinedButton(
+                onClick = onDownloadAll,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(50)
+            ) {
+                Text("Download All")
             }
         }
     }

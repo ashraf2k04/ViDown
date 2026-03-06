@@ -93,15 +93,7 @@ data class Format(
     val tbr: Double? = null,
     @SerialName("filesize") val fileSize: Double? = null,
     @SerialName("filesize_approx") val fileSizeApprox: Double? = null,
-) {
-    fun isAudioOnly(): Boolean = vcodec == null || vcodec == "none"
-
-    fun isVideoOnly(): Boolean = acodec == null || acodec == "none"
-
-    fun containsVideo(): Boolean = vcodec != null && vcodec != "none"
-
-    fun containsAudio(): Boolean = acodec != null && acodec != "none"
-}
+)
 
 @Serializable
 data class VideoClip(val start: Int = 0, val end: Int = 0) {
@@ -139,29 +131,7 @@ data class RequestedDownload(
     @SerialName("filesize") val fileSize: Double? = null,
     @SerialName("filesize_approx") val fileSizeApprox: Double? = null,
     val filename: String? = null,
-) {
-    fun toFormat(): Format =
-        Format(
-            formatId = formatId,
-            formatNote = formatNote,
-            ext = ext,
-            acodec = acodec,
-            vcodec = vcodec,
-            url = url,
-            width = width,
-            height = height,
-            fps = fps,
-            audioExt = audioExt,
-            videoExt = videoExt,
-            format = format,
-            resolution = resolution,
-            vbr = vbr,
-            abr = abr,
-            tbr = tbr,
-            fileSize = fileSize,
-            fileSizeApprox = fileSizeApprox,
-        )
-}
+)
 
 @Serializable
 data class PlaylistResult(
@@ -187,6 +157,7 @@ data class PlaylistEntry(
     val id: String? = null,
     val url: String? = null,
     val title: String? = null,
+    val description : String? = null,
     val duration: Double? = .0,
     val uploader: String? = null,
     val channel: String? = null,

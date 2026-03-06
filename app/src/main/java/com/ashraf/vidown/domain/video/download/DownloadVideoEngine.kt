@@ -51,6 +51,8 @@ object DownloadVideoEngine {
                 YoutubeDL.getInstance()
                     .execute(request, taskId, progressCallback)
 
+            Log.d("RESPONSE", response.out)
+
             response.out.lines().filter {
                 it.endsWith(".mp4") ||
                         it.endsWith(".mkv") ||

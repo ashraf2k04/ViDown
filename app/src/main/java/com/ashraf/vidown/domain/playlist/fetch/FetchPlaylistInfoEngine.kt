@@ -1,5 +1,6 @@
 package com.ashraf.vidown.domain.playlist.fetch
 
+import android.util.Log
 import com.ashraf.vidown.domain.helpers.PlaylistResult
 import com.ashraf.vidown.domain.helpers.json
 import com.yausername.youtubedl_android.YoutubeDL
@@ -25,6 +26,10 @@ object FetchPlaylistInfoEngine {
             val response =
                 YoutubeDL.getInstance().execute(request, taskKey, null)
 
+            Log.d("URL", response.out)
+            Log.d("URL", response.err)
+            Log.d("URL", response.elapsedTime.toString())
+            Log.d("URL", response.command.toString())
             json.decodeFromString<PlaylistResult>(response.out)
         }
     }

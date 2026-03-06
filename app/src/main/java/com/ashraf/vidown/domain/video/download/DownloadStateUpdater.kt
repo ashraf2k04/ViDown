@@ -9,7 +9,11 @@ import com.yausername.youtubedl_android.YoutubeDL
 
 object DownloadStateUpdater {
 
-    fun insertInitial(taskId: String, info: VideoInfo) {
+    fun insertInitial(
+        taskId: String,
+        info: VideoInfo,
+        outputDir: String
+    ){
         DownloadStateBus.upsert(
             DownloadUiItem(
                 taskId = taskId,
@@ -17,7 +21,11 @@ object DownloadStateUpdater {
                 progress = 0f,
                 downloadedBytes = 0,
                 totalBytes = info.estimateSize(),
-                status = DownloadStatus.DOWNLOADING
+                status = DownloadStatus.DOWNLOADING,
+                playlistTitle = null,
+                playlistId = null,
+                filepath = outputDir,
+                createdAt = System.currentTimeMillis()
             )
         )
     }

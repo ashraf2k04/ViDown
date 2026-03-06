@@ -1,9 +1,11 @@
 package com.ashraf.vidown.ui.screens.playlist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ashraf.vidown.domain.helpers.PlaylistEntry
 import com.ashraf.vidown.domain.YtdlpDriverWrapper
+import com.ashraf.vidown.domain.helpers.Thumbnail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -50,6 +52,8 @@ class PlaylistViewModel @Inject constructor(
                 ytdlpDriverWrapper.fetchPlaylistInfoDriver.fetchPlaylist(url, "playlist_preview")
             }
 
+            Log.d("URL RESULT", result.toString())
+
             result
                 .onSuccess { playlist ->
                     _state.update {
@@ -59,7 +63,8 @@ class PlaylistViewModel @Inject constructor(
                                 PlaylistItemUi(
                                     id = item.id,
                                     title = item.title,
-                                    url = item.url
+                                    url = item.url,
+                                    thumbnails = item.thumbnails
                                 )
                             } ?: emptyList(),
                             isLoading = false
@@ -104,6 +109,8 @@ class PlaylistViewModel @Inject constructor(
         enqueue(state.value.items.filter { it.isSelected })
     }
 
+    private var taskId : String? = null
+
     private fun enqueue(items: List<PlaylistItemUi>) {
 
         if (items.isEmpty()) return
@@ -111,15 +118,21 @@ class PlaylistViewModel @Inject constructor(
         val domainList: List<PlaylistEntry> =
             items.map { item: PlaylistItemUi -> item.toDomain() }
 
+        taskId = "playlist_${System.currentTimeMillis()}"
+
         ytdlpDriverWrapper.downloadPlaylistDriver.downloadPlaylist(
             title = state.value.title,
             playlist = domainList,
             outputDir = "/storage/emulated/0/Download/Vidown/Playlists",
             formatSelector = "bestvideo+bestaudio/best",
-            taskPrefix = "playlist_${System.currentTimeMillis()}"
+            taskPrefix = taskId!!
         )
 
         _events.tryEmit(PlaylistEvent.NavigateToDownloads)
+    }
+
+    fun cancel(taskId: String) {
+        ytdlpDriverWrapper.cancel(taskId)
     }
 }
 
@@ -127,7 +140,8 @@ private fun PlaylistItemUi.toDomain(): PlaylistEntry =
     PlaylistEntry(
         id = id,
         title = title,
-        url = url
+        url = url,
+        thumbnails = thumbnails
     )
 
 data class PlaylistUiState(
@@ -148,7 +162,8 @@ data class PlaylistItemUi(
     val title: String?,
     val url: String?,
     val duration: String? = null,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val thumbnails : List<Thumbnail>? = emptyList()
 )
 
 sealed interface PlaylistEvent {

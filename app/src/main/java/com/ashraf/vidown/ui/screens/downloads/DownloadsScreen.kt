@@ -18,8 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ashraf.vidown.ui.screens.downloads.components.DownloadedList
-import com.ashraf.vidown.ui.screens.downloads.components.DownloadingList
+import com.ashraf.vidown.ui.screens.downloads.components.downlaoded.DownloadedList
+import com.ashraf.vidown.ui.screens.downloads.components.downloading.DownloadingList
 import com.ashraf.vidown.ui.screens.downloads.components.DownloadsTabs
 import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadTab
 

@@ -1,4 +1,4 @@
-package com.ashraf.vidown.ui.screens.homescreen.components.quality
+package com.ashraf.vidown.ui.screens.homescreen.components.modalsheet.quality
 
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
