@@ -83,4 +83,6 @@ This keeps documentation **maintainable and review-friendly**.
 
 ## 🚧 Status
 
-Active development. Documentation will evolve alongside code changes.
+The project is under active development.
+
+Features, architecture, and documentation will evolve alongside the codebase.
