@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
-import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadStatus
+import com.ashraf.vidown.ui.screens.downloads.model.DownloadStatus
 
 @Composable
 fun FailedItem(

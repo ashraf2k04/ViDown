@@ -2,10 +2,10 @@ package com.ashraf.vidown.ui.screens.downloads
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ashraf.vidown.database.DownloadEntity
-import com.ashraf.vidown.database.DownloadRepository
-import com.ashraf.vidown.domain.YtdlpDriverWrapper
-import com.ashraf.vidown.ui.screens.downloads.helpers.*
+import com.ashraf.vidown.data.model.DownloadEntity
+import com.ashraf.vidown.data.repository.DownloadRepository
+import com.ashraf.vidown.domain.engine.YtdlpDriverWrapper
+import com.ashraf.vidown.ui.screens.downloads.model.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -128,6 +128,78 @@ class DownloadVM @Inject constructor(
         if (total == 0L) return 0f
 
         return downloaded.toFloat() / total
+    }
+
+    private val _selectionMode = MutableStateFlow(false)
+    val selectionMode = _selectionMode
+
+    private val _selectedIds = MutableStateFlow<Set<String>>(emptySet())
+    val selectedIds = _selectedIds
+
+    fun enterSelection(id: String) {
+        _selectionMode.value = true
+        _selectedIds.value = setOf(id)
+    }
+
+    fun toggleSelection(id: String) {
+
+        val current = _selectedIds.value.toMutableSet()
+
+        if (current.contains(id))
+            current.remove(id)
+        else
+            current.add(id)
+
+        _selectedIds.value = current
+
+        if (current.isEmpty()) {
+            _selectionMode.value = false
+        }
+    }
+
+    fun clearSelection() {
+        _selectionMode.value = false
+        _selectedIds.value = emptySet()
+    }
+
+    fun deleteSingle(taskId: String, deleteFiles: Boolean) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            if (deleteFiles) {
+
+                val entity = repository.getById(taskId)
+
+                repository.deleteSelectedWithFiles(
+                    listOf(entity)
+                )
+
+            } else {
+
+                repository.softDelete(taskId)
+
+            }
+        }
+    }
+
+    fun deleteSelected(deleteFiles: Boolean) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val ids = _selectedIds.value.toList()
+
+            if (deleteFiles){
+                val downloads = ids.map {
+                    repository.getById(it)
+                }
+
+                repository.deleteSelectedWithFiles(downloads)
+            }
+            else
+                repository.softDeleteSelected(ids)
+
+            clearSelection()
+        }
     }
 }
 

@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.ashraf.vidown.domain.helpers.VideoInfo
-import com.ashraf.vidown.domain.YtdlpDriverWrapper
-import com.ashraf.vidown.ui.screens.homescreen.helpers.HomeUiState
-import com.ashraf.vidown.ui.screens.homescreen.helpers.QualityTier
-import com.ashraf.vidown.ui.screens.homescreen.helpers.buildFormatSelector
-import com.ashraf.vidown.ui.screens.playlist.isPlaylist
+import com.ashraf.vidown.domain.model.VideoInfo
+import com.ashraf.vidown.domain.engine.YtdlpDriverWrapper
+import com.ashraf.vidown.ui.screens.homescreen.model.HomeUiState
+import com.ashraf.vidown.ui.screens.homescreen.model.QualityTier
+import com.ashraf.vidown.ui.screens.homescreen.utils.formatSelectorBuilder
+import com.ashraf.vidown.ui.screens.playlist.mapper.isPlaylist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -153,7 +153,7 @@ class HomeViewModel @Inject constructor(
         val info = cachedVideoInfo ?: return
         val state = _uiState.value
 
-        val formatSelector = buildFormatSelector(state)
+        val formatSelector = formatSelectorBuilder(state)
 
         ytldpDriverWrapper.downloadVideoDriver.download(
             info = info,

@@ -1,9 +1,9 @@
 package com.ashraf.vidown.domain.video.fetch
 
 import androidx.annotation.CheckResult
-import com.ashraf.vidown.domain.helpers.BASENAME
-import com.ashraf.vidown.domain.helpers.VideoInfo
-import com.ashraf.vidown.domain.helpers.json
+import com.ashraf.vidown.domain.constants.BASENAME
+import com.ashraf.vidown.domain.model.VideoInfo
+import com.ashraf.vidown.domain.constants.json
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import kotlinx.coroutines.Dispatchers

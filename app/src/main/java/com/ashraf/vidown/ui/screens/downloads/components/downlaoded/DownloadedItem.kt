@@ -1,6 +1,8 @@
 package com.ashraf.vidown.ui.screens.downloads.components.downlaoded
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,28 +27,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.runtime.remember
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 
 @Composable
 fun DownloadedItem(
-    thumbnail : String,
+    thumbnail: String,
     title: String,
     size: String,
+    selected: Boolean,
+    selectionMode: Boolean,
+    onClick: () -> Unit,
+    onLongPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 4.dp),
         shape = RoundedCornerShape(20.dp),
         tonalElevation = 4.dp,
         shadowElevation = 8.dp
     ) {
+
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(12.dp)
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick,
+                    onLongClick = onLongPress
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -56,13 +70,12 @@ fun DownloadedItem(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFFEDEDED))
             ) {
+
                 AsyncImage(
                     model = thumbnail,
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .matchParentSize()
-                        .clip(RoundedCornerShape(16.dp))
+                    modifier = Modifier.matchParentSize()
                 )
 
                 Icon(
@@ -75,10 +88,10 @@ fun DownloadedItem(
 
             Spacer(Modifier.width(12.dp))
 
-            // Title + Status
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
@@ -95,13 +108,19 @@ fun DownloadedItem(
                 )
             }
 
-            // Success icon
-            Icon(
-                imageVector = Icons.Default.CheckCircle,
-                contentDescription = null,
-                tint = Color(0xFF4CAF50),
-                modifier = Modifier.size(24.dp)
-            )
+            if (selectionMode) {
+
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint =
+                        if (selected)
+                            Color(0xFF4CAF50)
+                        else
+                            Color.Gray,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }

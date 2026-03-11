@@ -2,7 +2,7 @@ package com.ashraf.vidown.domain.video.download
 
 import android.util.Log
 import androidx.annotation.CheckResult
-import com.ashraf.vidown.domain.helpers.OUTPUT_TEMPLATE_DEFAULT
+import com.ashraf.vidown.domain.constants.OUTPUT_TEMPLATE_DEFAULT
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import kotlinx.coroutines.Dispatchers

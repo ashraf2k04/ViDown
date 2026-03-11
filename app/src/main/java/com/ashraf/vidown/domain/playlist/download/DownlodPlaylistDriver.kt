@@ -1,12 +1,12 @@
 package com.ashraf.vidown.domain.playlist.download
 
 import android.util.Log
-import com.ashraf.vidown.domain.DownloadEngineImplement
-import com.ashraf.vidown.database.DownloadEntity
-import com.ashraf.vidown.database.DownloadRepository
-import com.ashraf.vidown.domain.helpers.PlaylistEntry
-import com.ashraf.vidown.domain.helpers.VideoInfo
-import com.ashraf.vidown.ui.screens.downloads.helpers.DownloadStatus
+import com.ashraf.vidown.domain.engine.DownloadEngineImplement
+import com.ashraf.vidown.data.model.DownloadEntity
+import com.ashraf.vidown.data.repository.DownloadRepository
+import com.ashraf.vidown.domain.model.PlaylistEntry
+import com.ashraf.vidown.domain.model.VideoInfo
+import com.ashraf.vidown.ui.screens.downloads.model.DownloadStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

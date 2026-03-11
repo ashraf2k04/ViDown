@@ -1,7 +1,6 @@
 package com.ashraf.vidown.domain.playlist.fetch
 
-import com.ashraf.vidown.domain.helpers.PlaylistResult
-import com.yausername.youtubedl_android.YoutubeDL
+import com.ashraf.vidown.domain.model.PlaylistResult
 import javax.inject.Inject
 import javax.inject.Singleton
 

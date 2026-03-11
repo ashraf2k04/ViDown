@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ashraf.vidown.ui.screens.homescreen.components.DownloadButton
 import com.ashraf.vidown.ui.screens.homescreen.components.SearchBar
-import com.ashraf.vidown.ui.screens.homescreen.components.modalsheet.SelectPropertyBottomSheet
+import com.ashraf.vidown.ui.screens.homescreen.components.bottomsheet.SelectPropertyBottomSheet
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ashraf.vidown.ui.navigation.Routes
 

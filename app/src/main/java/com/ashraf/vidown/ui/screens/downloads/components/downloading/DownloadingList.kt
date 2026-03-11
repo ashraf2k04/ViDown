@@ -6,9 +6,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ashraf.vidown.ui.screens.downloads.DownloadVM
-import com.ashraf.vidown.ui.screens.downloads.components.PlaylistGroupItem
-import com.ashraf.vidown.ui.screens.downloads.helpers.*
-import com.ashraf.vidown.ui.screens.homescreen.helpers.formatBytes
+import com.ashraf.vidown.ui.screens.downloads.components.EmptyState
+import com.ashraf.vidown.ui.screens.downloads.components.common.PlaylistGroupItem
+import com.ashraf.vidown.ui.screens.downloads.model.*
+import com.ashraf.vidown.ui.screens.homescreen.utils.byteFormatter
 
 @Composable
 fun DownloadingList(
@@ -16,108 +17,117 @@ fun DownloadingList(
 ) {
     val items by viewModel.downloading.collectAsState(emptyList())
 
-    LazyColumn {
+    if (items.isEmpty()) {
 
-        items(items) { item ->
+        EmptyState(
+            "No Downloads running",
+            "Start downloading videos and they will appear here."
+        )
 
-            when (item) {
+    } else {
+        LazyColumn {
 
-                is DownloadListItem.Single -> {
+            items(items) { item ->
 
-                    val data = item.item
+                when (item) {
 
-                    when (data.status) {
+                    is DownloadListItem.Single -> {
 
-                        DownloadStatus.PENDING ->
-                            DownloadItem(
-                                title = data.title,
-                                progress = data.progress,
-                                downloaded = formatBytes(data.downloadedBytes),
-                                total = data.totalBytes?.let(::formatBytes) ?: "~",
-                                onCancel = { viewModel.cancel(data.taskId) },
-                                thumbnail = data.imageUrl,
-                                status = data.status
-                            )
+                        val data = item.item
 
-                        DownloadStatus.DOWNLOADING ->
-                            DownloadItem(
-                                title = data.title,
-                                progress = data.progress,
-                                downloaded = formatBytes(data.downloadedBytes),
-                                total = data.totalBytes?.let(::formatBytes) ?: "~",
-                                onCancel = { viewModel.cancel(data.taskId) },
-                                thumbnail = data.imageUrl,
-                                status = data.status
-                            )
+                        when (data.status) {
 
-                        else ->
-                            FailedItem(
-                                status = data.status,
-                                reason = data.error!!,
-                                title = data.title,
-                                onRetry = null,
-                                thumbnail = data.imageUrl!!,
-
+                            DownloadStatus.PENDING ->
+                                DownloadItem(
+                                    title = data.title,
+                                    progress = data.progress,
+                                    downloaded = byteFormatter(data.downloadedBytes),
+                                    total = data.totalBytes?.let(::byteFormatter) ?: "~",
+                                    onCancel = { viewModel.cancel(data.taskId) },
+                                    thumbnail = data.imageUrl,
+                                    status = data.status
                                 )
-                    }
-                }
 
-                is DownloadListItem.PlaylistGroup -> {
+                            DownloadStatus.DOWNLOADING ->
+                                DownloadItem(
+                                    title = data.title,
+                                    progress = data.progress,
+                                    downloaded = byteFormatter(data.downloadedBytes),
+                                    total = data.totalBytes?.let(::byteFormatter) ?: "~",
+                                    onCancel = { viewModel.cancel(data.taskId) },
+                                    thumbnail = data.imageUrl,
+                                    status = data.status
+                                )
 
-                    val progress =
-                        viewModel.calculatePlaylistProgress(item.items)
+                            else ->
+                                FailedItem(
+                                    status = data.status,
+                                    reason = data.error!!,
+                                    title = data.title,
+                                    onRetry = null,
+                                    thumbnail = data.imageUrl!!,
 
-                    PlaylistGroupItem(
-                        title = "${item.playlistTitle} " +
-                                "(${item.items.count { it.status == DownloadStatus.COMPLETED }}/${item.items.size})",
-                        progress = progress,
-                        isExpanded = item.isExpanded,
-                        onToggle = {
-                            viewModel.togglePlaylist(item.playlistId)
+                                    )
                         }
-                    ) {
+                    }
+
+                    is DownloadListItem.PlaylistGroup -> {
+
+                        val progress =
+                            viewModel.calculatePlaylistProgress(item.items)
+
+                        PlaylistGroupItem(
+                            title = "${item.playlistTitle} " +
+                                    "(${item.items.count { it.status == DownloadStatus.COMPLETED }}/${item.items.size})",
+                            progress = progress,
+                            isExpanded = item.isExpanded,
+                            onToggle = {
+                                viewModel.togglePlaylist(item.playlistId)
+                            }
+                        ) {
 
 
-                        item.items.forEach { data ->
-                            when (data.status) {
+                            item.items.forEach { data ->
+                                when (data.status) {
 
-                                DownloadStatus.PENDING ->
-                                    DownloadItem(
-                                        title = data.title,
-                                        progress = data.progress,
-                                        downloaded = formatBytes(data.downloadedBytes),
-                                        total = data.totalBytes?.let(::formatBytes) ?: "~",
-                                        onCancel = { viewModel.cancel(data.taskId) },
-                                        thumbnail = data.imageUrl,
-                                        status = data.status
-                                    )
+                                    DownloadStatus.PENDING ->
+                                        DownloadItem(
+                                            title = data.title,
+                                            progress = data.progress,
+                                            downloaded = byteFormatter(data.downloadedBytes),
+                                            total = data.totalBytes?.let(::byteFormatter) ?: "~",
+                                            onCancel = { viewModel.cancel(data.taskId) },
+                                            thumbnail = data.imageUrl,
+                                            status = data.status
+                                        )
 
-                                DownloadStatus.DOWNLOADING -> {
+                                    DownloadStatus.DOWNLOADING -> {
 
-                                    Log.d("TASK", data.taskId)
-                                    Log.d("TASK", data.toString())
+                                        Log.d("TASK", data.taskId)
+                                        Log.d("TASK", data.toString())
 
-                                    DownloadItem(
-                                        title = data.title,
-                                        progress = data.progress,
-                                        downloaded = formatBytes(data.downloadedBytes),
-                                        total = data.totalBytes?.let(::formatBytes) ?: "~",
-                                        onCancel = { viewModel.cancel(data.taskId) },
-                                        thumbnail = data.imageUrl,
-                                        status = data.status
-                                    )
-                                }
+                                        DownloadItem(
+                                            title = data.title,
+                                            progress = data.progress,
+                                            downloaded = byteFormatter(data.downloadedBytes),
+                                            total = data.totalBytes?.let(::byteFormatter) ?: "~",
+                                            onCancel = { viewModel.cancel(data.taskId) },
+                                            thumbnail = data.imageUrl,
+                                            status = data.status
+                                        )
+                                    }
 
-                                else -> {
-                                    Log.d("TASK", data.taskId)
-                                    Log.d("TASK", data.toString())
-                                    FailedItem(
-                                        status = data.status,
-                                        reason = data.error ?: "Cancelled",
-                                        title = data.title,
-                                        onRetry = null,
-                                        thumbnail = data.imageUrl!!
-                                    )
+                                    else -> {
+                                        Log.d("TASK", data.taskId)
+                                        Log.d("TASK", data.toString())
+                                        FailedItem(
+                                            status = data.status,
+                                            reason = data.error ?: "Cancelled",
+                                            title = data.title,
+                                            onRetry = null,
+                                            thumbnail = data.imageUrl!!
+                                        )
+                                    }
                                 }
                             }
                         }

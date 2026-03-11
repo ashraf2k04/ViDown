@@ -1,6 +1,6 @@
 package com.ashraf.vidown.domain.video.fetch
 
-import com.ashraf.vidown.domain.helpers.VideoInfo
+import com.ashraf.vidown.domain.model.VideoInfo
 import com.yausername.youtubedl_android.YoutubeDL
 import javax.inject.Inject
 

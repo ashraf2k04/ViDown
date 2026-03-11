@@ -1,8 +1,8 @@
 package com.ashraf.vidown.domain.playlist.fetch
 
 import android.util.Log
-import com.ashraf.vidown.domain.helpers.PlaylistResult
-import com.ashraf.vidown.domain.helpers.json
+import com.ashraf.vidown.domain.model.PlaylistResult
+import com.ashraf.vidown.domain.constants.json
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import kotlinx.coroutines.Dispatchers
