@@ -35,14 +35,14 @@ The UI layer is organized using a **feature-based screen architecture**.
 
 Example structure:
 
-` 
+```
 ui
  └ screens
       ├ homescreen
       ├ downloads
       ├ playlist
       └ mainscreen
-`
+```
 
 Each screen contains its own:
 
