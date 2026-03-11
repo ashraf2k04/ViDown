@@ -59,4 +59,6 @@ docs
 
 Source code available at:
 
-[ashraf2k04/vidown](https://github.com/ashraf2k04/vidown)
+<a href="https://github.com/ashraf2k04/vidown" target="_blank">
+Github Repository - ashraf2k04/vidown
+</a>
