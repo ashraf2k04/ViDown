@@ -1,9 +1,20 @@
 # Vidown 📥🎬
 
-Vidown is a modern Android application focused on media downloading, built with
-Jetpack Compose, Hilt, Room, and native downloader tooling.
+Vidown is a modern Android application focused on media downloading, built using
+Kotlin, Jetpack Compose, Hilt, Room, and native downloader tooling following modern development android architecture.
 
 This repository uses **modular documentation** instead of a single bloated README.
+
+---
+
+## ✨ Features
+
+- Download videos and playlists using the yt-dlp engine
+- Modern UI built with Jetpack Compose
+- Offline download tracking with Room database
+- Background downloading using Android foreground services
+- Playlist and video extraction support
+- Modular screen-based UI architecture
 
 ---
 
@@ -15,6 +26,32 @@ This repository uses **modular documentation** instead of a single bloated READM
 - Coroutines + Flow
 - Native downloader binaries (yt-dlp stack)
 - Android 13+ permission model
+
+---
+
+## 📂 Project Structure
+
+The UI layer is organized using a **feature-based screen architecture**.
+
+Example structure:
+
+` 
+ui
+ └ screens
+      ├ homescreen
+      ├ downloads
+      ├ playlist
+      └ mainscreen
+`
+
+Each screen contains its own:
+
+- UI components
+- ViewModel
+- UI state models
+- utilities
+
+This keeps features isolated and easy to maintain.
 
 ---
 
