@@ -59,4 +59,4 @@ docs
 
 Source code available at:
 
-https://github.com/ashraf2k04/vidown
+[ashraf2k04/vidown](https://github.com/ashraf2k04/vidown)
